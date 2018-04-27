@@ -76,7 +76,7 @@ This function compare two long strings decomposing them into 'pertinent' words
 
 '''
 def compare_string(string_one,string_two):
-    no_relevent_words = ["at","of","in","for","and"]
+    no_relevent_words = ["at","of","in","for","and","area"]
     match_enough = False
 
     tab_one = "-".join(string_one.split(" ")).split("-")
@@ -148,12 +148,93 @@ def find_partly_profile(g):
 
 print("######## Tous les gars avec les profiles complets #########")
 eux_tous = find_complete_profile(G)
-print(eux_tous)
+#print(eux_tous)
 print("Ils sont ", len(eux_tous))
 print("Soit : ",(len(eux_tous)/811)*100)
 print("######## Tous les gars avec les profiles partiellement remplis #########")
 truc = find_partly_profile(G)
 print("Les autres qui ont un peu mais pas tout XD sont : ",(len(truc)/811)*100)
 
+#
+def clean_version(attribute,value):
+
+    if attribute == "location" :
+        val = value.split()
+        if "area" in val :
+            val.remove("area")
+        val = " ".join(val)
+    #if attribute == "employer" :
+
+    #if attribute == "college" :
+        
+
+    return val
+
+         
 
 #Tableau NodeXLocation
+#Let's get all value for a given attribute
+
+def get_all_values(attribute):
+    all_attributes = []
+    
+    for values in attribute.values():
+        for val in values:
+            already_in = False
+            for i in all_attributes:
+                if compare_string(val,i) : #If val is already in all_attributes
+                    already_in = True
+                    break
+            if already_in :
+                break
+            else :
+                all_attributes.append(val)
+    return all_attributes
+
+'''
+print("...................Employers......................")
+e = get_all_values(employer)
+j = 1
+for i in e :
+    print(j," => ",i)   
+    j = j + 1
+input()
+print("...................Colleges......................")
+e = get_all_values(college)
+j = 1
+for i in e :
+    print(j," => ",i)
+    j = j + 1
+input()
+print("...................Locations......................")
+e = get_all_values(location)
+j = 1
+for i in e :
+    print(j," => ",clean_version("location",i))
+    j = j + 1
+'''
+
+###################### Method One ##################
+
+#Creation of the Matrix
+#Location
+def create_matrix(attribute):
+    guys = {}
+    all_attributes = get_all_values(attribute)
+    for node in G.nodes():
+        tmp_list = []
+        for attr in all_attributes :
+            if not (node in attribute) :
+                tmp_list.append([attr,0])
+        if not (len(tmp_list) == 0) :
+            guys[node] = tmp_list
+    return guys
+'''
+TODO
+def inference_method_one():
+    #Le truc qui va noter les trucs
+
+'''
+
+#Relation between location=>employer=>college=>employer
+def get_attribute_in_attribute(attrubute1,attribute2)
