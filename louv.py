@@ -2,18 +2,11 @@ import community
 import pickle
 import networkx as nx
 import matplotlib.pyplot as plt
-#from openpyxl import Workbook
 
-
-#better with karate_graph() as defined in networkx example.
-#erdos renyi don't have true community structure
-#G = nx.erdos_renyi_graph(30, 0.05)
 G = nx.read_gexf("mediumLinkedin.gexf")
-#first compute the best partition
 college={}
 location={}
 employer={}
-# The dictionaries are loaded as dictionaries from the disk (see pickle in Python doc)
 with open('mediumCollege.pickle', 'rb') as handle:
     college = pickle.load(handle)
 with open('mediumLocation.pickle', 'rb') as handle:
@@ -36,7 +29,6 @@ def attribut_partition (graph, attribut):
     for  i in list_of_all_attribut:
         new_dict[i] = match
         match+=1
-    #print(new_dict)
     for k,val in attribut.items():
         for i in val:
             if i in new_dict:
@@ -44,38 +36,115 @@ def attribut_partition (graph, attribut):
 
     return diction
 
-
-       
     
 
+def find_best_attribut (attribut): # pour déterminer l'attribut le plus renseigné
+    best_attribut=""
+    cpt_bl=0
+    cpt=0
+    list_of_all_attribut=[]
+    for k in attribut:
+        val=attribut[k]
+        for i in val:
+            list_of_all_attribut.append(i)
+            if attribut==location and i=='san francisco bay area':
+                cpt+=1
+        print(cpt)
+        
+    for l in list_of_all_attribut:
+        cpt=0
+        for i in list_of_all_attribut:
+            if l == i:
+                cpt+=1
+        if cpt>=cpt_bl:
+            cpt_bl=cpt
+            best_attribut= l
+        cpt=0
+        
+    return best_attribut,cpt_bl
 
 
 
 
+best_location,n_location=find_best_attribut(location)
+best_college,n_college=find_best_attribut(college)
+best_employer,n_employer=find_best_attribut(employer)
+
+print("la meilleure location est: "+str(best_location)+" il se repète %d  fois\n" % n_location)
+
+print("le meilleur college est: "+str(best_college)+" il se repète %d  fois\n" % n_college)
+
+print("le meilleur employer est: "+str(best_employer)+" il se repète %d  fois\n" % n_employer)
 
 
 
+#je cherche now les plus centraux de chaque communauté: méthode 1
 
-
-
-
-"""calcule de la centralité:"""
 centrality_dict= nx.degree_centrality(G)
 
 locat_part= attribut_partition(G, location)
+partition = community.best_partition(G, locat_part, resolution=2., randomize=False)
 
-partition = community.best_partition(G, locat_part)
 value=[partition.get(node) for node in G.nodes()]
+single_value=[]
+centrality_value=0
+maximum=0
+for i in value:
+    if i not in single_value:
+        single_value.append(i)
+for i in single_value:
+    le_plus_centrique=''
+    for k in partition:
+        if partition[k]== i:
+             if centrality_dict[k] > maximum:
+                 maximum=centrality_dict[k]
+                 le_plus_centrique=k
+    maximum=0
+    centrality_value=0
+    print(" la communauté %d \n" %i)
+    print("le_plus_centrique pour est :  %s \n" %le_plus_centrique)
+#####""  
 
-print(value)
-print("\n\n")
 
-#print(locat_part)
-#print(centrality_dict)
 
-#print(partition)
+#je cherche now les plus centraux de chaque communauté: méthode 2
 
-#drawing
+method2_centrality= nx.betweenness_centrality(G)
+
+single_value=[]
+list_centriqu=[]
+centrality_value=0
+maximum=0
+for i in value:
+    if i not in single_value:
+        single_value.append(i)
+for i in single_value:
+    le_plus_centrique=''
+    for k in partition:
+        if partition[k]== i:
+             if method2_centrality[k] > maximum:
+                 maximum=method2_centrality[k]
+                 le_plus_centrique=k
+    list_centriqu.append(le_plus_centrique)
+
+    maximum=0
+    centrality_value=0
+    print(" la communauté %d \n" %i)
+    print("le_plus_centrique m pour est :  %s \n" %le_plus_centrique)
+
+print(list_centriqu)
+location={}
+with open('mediumLocation.pickle', 'rb') as handle:
+    location = pickle.load(handle)
+
+for i in list_centriqu:
+    print(location[i])
+#####""  
+
+
+
+
+#dessin
 size = float(len(set(partition.values())))
 pos = nx.spring_layout(G)
 count = 0.
