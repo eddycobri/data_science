@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from skimage.graph import route_through_array
 
-input_filename="/home/rudy/Desktop/population-density-map.bmp"
+input_filename="population-density-map.bmp"
 
 the_map = Image.open(input_filename)
 width=the_map.size[0]
@@ -19,13 +19,20 @@ gray_matrix=np.array(the_map_gray)
 brest=[2108,4426]  #coor de brest 
 rize=[1306,669]          # coor de rize
 
+max_gray_level = np.amax(gray_matrix)
+density_matrix = gray_matrix / 255.0
+print(density_matrix)
 
-the_map_gray.show()
-colors = the_map_gray.getcolors(width*heigth)
-print('Nb of different colors: %d' % len(colors))
+shortest_path = route_through_array(density_matrix,rize,brest)
+print(shortest_path)
+#print(gray_matrix)
+#the_map_gray.show()
+
+#colors = the_map_gray.getcolors(width*heigth)
+#print('Nb of different colors: %d' % len(colors))
 
 
-
+"""
 # from gray colors to density
 density = gray_matrix/255.0
 
@@ -34,12 +41,13 @@ the_path=route_through_array(density, rize, brest)
 
 pixelArray = the_map.load() # pixel array
 for i in the_path[0]:
-	pixelArray[i[1],i[0]] = (255,0,0,255) # change pixel color
+    print("Pixel in path :",i)
+    pixelArray[i[1],i[0]] = (255,0,255) # change pixel color
 the_map.show()
 
 
 
-print(density)
+print(density)"""
 """
 plt.imshow(density)
 plt.plot(4426,2108,'r*')
