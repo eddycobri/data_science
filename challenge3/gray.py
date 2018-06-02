@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from skimage.graph import route_through_array
+import networkx as nx
 
 input_filename="population-density-map.bmp"
 
@@ -27,19 +28,35 @@ shortest_path = route_through_array(density_matrix,rize,brest)
 print(shortest_path)
 #print(gray_matrix)
 #the_map_gray.show()
+colors = the_map_gray.getcolors(width*heigth)
+print('Nb of different colors: %d' % len(colors))
 
 #colors = the_map_gray.getcolors(width*heigth)
 #print('Nb of different colors: %d' % len(colors))
 
+#la fo²nction si_dessous permet de reduire une matrice...
 
 """
 # from gray colors to density
 density = gray_matrix/255.0
+print(density)
+#reduced_density=matrix_transformer(density, 10)
+#print(reduced_density)
+a=np.size(density)
+print(a)
+b=np.shape(density)
+print(b)
 
+"""
 #the shortest path used by the zombie for Rize to brest is the path consisted of city with higher density , so
 the_path=route_through_array(density, rize, brest)
 
 pixelArray = the_map.load() # pixel array
+print("00000000000000000000")
+print(the_path[0])
+plt.imshow(density)
+plt.plot(4426,2108,'g*')
+plt.plot(669,1306,'g*')
 for i in the_path[0]:
     print("Pixel in path :",i)
     pixelArray[i[1],i[0]] = (255,0,255) # change pixel color
@@ -49,6 +66,8 @@ the_map.show()
 
 print(density)"""
 """
+"""
+for i,j in th
 plt.imshow(density)
 plt.plot(4426,2108,'r*')
 plt.plot(669,1306,'r*')
@@ -65,4 +84,5 @@ gray = rgb2gray(img)
 plt.imshow(gray, cmap = plt.get_cmap('gray'))
 plt.show()
 """
+
 
