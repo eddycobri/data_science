@@ -55,3 +55,51 @@ def find_time(path,density): #this function permit to determine the duration of 
 
 info_duration=find_time(the_path,density_matrix)
 print(info_duration)
+
+def matrix_transformer (the_matrix, n):# this function permit to reduce a matrix for manipulating easily
+    new_matrix=[]
+    (x,y)=np.shape(the_matrix)
+    z,t=0,0
+    while z<x:
+        ligne=[]
+        while t<y:
+            moy=np.mean(the_matrix[z:z+n,t:t+n]) # we taque the mean of a bloc of mthe matrix and 
+            ligne.append(moy)#atribute it at a new value
+            t+=n
+        new_matrix.append(np.array(ligne))
+        z+=n
+    return np.array(new_matrix)    
+
+ ################### Méthode 2 with graph..................   
+
+def my_graph(matrice):
+    
+    G = nx.grid_2d_graph(0,0) #new graph
+    densitym = matrice/255.0 #density matrix
+    heigth = matrice.shape[0] #heigth and width of the matrix
+    width = matrice.shape[1]   
+    for i in range (heigth): 
+        for j in range (width):
+            
+            G.add_node((i,j)) #we add the nodes (i,j) with i the line and j the column
+            print((i,j))
+    for node in list(G.nodes):
+        i = node[0]
+        j = node[1]
+        ends = [[i+1,j],[i,j+1],[i-1,j],[i,j-1]] #neighbours of node (i,j)
+        for end in ends:
+            if (end[0]>=0 and end[0]<heigth) and (end[1]>=0 and end[1]<width):
+                speed=(1+23*(densitym[end[0], end[1]]))/24   #la vitesse des zombie
+                G.add_edge((i,j),(end[0],end[1]),weight = 1/float(speed)) #we add the edge between (i,j) and each neighbour with the time as weight
+    nx.draw(G)
+    plt.show()
+    return G
+
+
+
+graph=my_graph(gray_matrix)
+the_path2= nx.dijkstra_path(graph,str(2108,4426),str(1306,669))
+print(the_path2)
+info_duration2=find_time(the_path2,density_matrix)
+
+
