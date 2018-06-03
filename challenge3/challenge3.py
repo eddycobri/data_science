@@ -35,11 +35,15 @@ plt.show()
 
 def find_time(path,density): #this function permit to determine the duration of the travel of zombies
     the_duration=0
+    null_density=0
     for area in path[0]: #go through the path
         pxl_density=density[area[0],area[1]] # take the density of the pixel
+        if (pxl_density==0):
+            print(area)
+
         speed=(23/24)*pxl_density+ (1/24) # caculate the speed of the zombie in this area
         the_duration+=1/speed # compute the duration
-
+    print("null density = : "+str(null_density))
     days=the_duration//24
     hour=the_duration%24
     hours=hour%60
