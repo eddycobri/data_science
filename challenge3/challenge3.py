@@ -14,8 +14,8 @@ matrix = np.array(the_map)
 the_map_gray=the_map.convert('L')
 the_map_gray.save('themapgray.bmp')
 gray_matrix=np.array(the_map_gray)
-brest=[2108,4426]  #coor de brest 
-rize=[1306,669]          # coor de rize
+rize=[2108,4426]  #coor de brest 
+brest=[1306,669]          # coor de rize
 
 max_gray_level = np.amax(gray_matrix)
 density_matrix = gray_matrix / 255.0
